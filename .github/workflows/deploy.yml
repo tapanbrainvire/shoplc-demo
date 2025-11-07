@@ -3,45 +3,44 @@ name: Deploy to Shopify Stores
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        store: [store1, store2, store3, store4]
+        store: [store1, store2]
+      fail-fast: false  # Continue deploying other stores even if one fails
     
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
       
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
       
       - name: Install Shopify CLI
         run: npm install -g @shopify/cli @shopify/theme
       
       - name: Build theme for ${{ matrix.store }}
-        run: |
-          mkdir -p build/${{ matrix.store }}
-          cp -r shared/* build/${{ matrix.store }}/
-          
-          if [ -d "stores/${{ matrix.store }}/overrides" ]; then
-            cp -r stores/${{ matrix.store }}/overrides/* build/${{ matrix.store }}/
-          fi
-
-          if [ -d "stores/${{ matrix.store }}/config" ]; then
-            mkdir -p build/${{ matrix.store }}/config
-            cp -r stores/${{ matrix.store }}/config/* build/${{ matrix.store }}/config/
-          fi
+        run: npm run build:${{ matrix.store }}
       
-      - name: Deploy to ${{ matrix.store }}
+      - name: Deploy to ${{ matrix.store }} (Unpublished)
         env:
-          SHOPIFY_FLAG_STORE: ${{ secrets[format('STORE{0}_SHOPIFY_FLAG_STORE', matrix.store == 'store1' && '1' || matrix.store == 'store2' && '2' || matrix.store == 'store3' && '3' || '4')] }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets[format('STORE{0}_SHOPIFY_CLI_THEME_TOKEN', matrix.store == 'store1' && '1' || matrix.store == 'store2' && '2' || matrix.store == 'store3' && '3' || '4')] }}
+          SHOPIFY_FLAG_STORE: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_FLAG_STORE || secrets.STORE2_SHOPIFY_FLAG_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_CLI_THEME_TOKEN || secrets.STORE2_SHOPIFY_CLI_THEME_TOKEN }}
         run: |
           cd build/${{ matrix.store }}
-          shopify theme push --unpublished --json
+          shopify theme push --unpublished --json --path=.
+      
+      - name: Deployment summary
+        run: |
+          echo "✅ Successfully deployed to ${{ matrix.store }}"
+          echo "Store: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_FLAG_STORE || secrets.STORE2_SHOPIFY_FLAG_STORE }}"
