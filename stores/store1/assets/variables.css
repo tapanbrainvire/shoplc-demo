@@ -1,0 +1,46 @@
+/**
+ * Store 1 - CSS Variables
+ * Customize these values to match your store's brand
+ */
+
+:root {
+  /* Brand Colors */
+  --color-primary: #2C3E50;        /* Main brand color */
+  --color-secondary: #95A5A6;      /* Secondary color */
+  --color-accent: #E74C3C;         /* Accent/CTA color */
+  --color-background: #ECF0F1;     /* Page background */
+  --color-text: #2C3E50;           /* Body text color */
+  --color-text-light: #7F8C8D;     /* Light text color */
+  --color-border: #BDC3C7;         /* Border color */
+  --color-error: #E74C3C;          /* Error messages */
+  --color-success: #27AE60;        /* Success messages */
+  
+  /* Typography */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Open Sans', sans-serif;
+  --font-size-base: 16px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-base: 1.6;
+  --line-height-heading: 1.2;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 96px;
+  
+  /* Layout */
+  --container-max-width: 1200px;
+  --header-height: 80px;
+  --border-radius: 8px;
+  --border-width: 1px;
+  
+  /* Effects */
+  --transition-speed: 0.3s;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --box-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+}

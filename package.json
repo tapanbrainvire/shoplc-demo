@@ -1,0 +1,21 @@
+{
+  "name": "shoplc",
+  "version": "1.0.0",
+  "description": "Multi-store Shopify theme management",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:store1": "node scripts/build.js store1",
+    "build:store2": "node scripts/build.js store2",
+    "clean": "rm -rf build/"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "shoplc"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^11.3.2"
+  }
+}
