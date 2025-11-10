@@ -3,7 +3,7 @@ name: Deploy to Shopify Stores
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         store: [store1, store2]
-      fail-fast: false  # Continue deploying other stores even if one fails
+      fail-fast: false
     
     steps:
       - name: Checkout repository
@@ -32,15 +32,20 @@ jobs:
       - name: Build theme for ${{ matrix.store }}
         run: npm run build:${{ matrix.store }}
       
-      - name: Deploy to ${{ matrix.store }} (Unpublished)
+      - name: Deploy to ${{ matrix.store }}
         env:
           SHOPIFY_FLAG_STORE: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_FLAG_STORE || secrets.STORE2_SHOPIFY_FLAG_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_CLI_THEME_TOKEN || secrets.STORE2_SHOPIFY_CLI_THEME_TOKEN }}
         run: |
           cd build/${{ matrix.store }}
-          shopify theme push --unpublished --json --path=.
+          THEME_NAME="GitHub-Deploy-$(date +%Y%m%d-%H%M%S)"
+          shopify theme push --unpublished --theme="Shoplc-github-demo" --path=. --json --force
       
       - name: Deployment summary
         run: |
           echo "✅ Successfully deployed to ${{ matrix.store }}"
-          echo "Store: ${{ matrix.store == 'store1' && secrets.STORE1_SHOPIFY_FLAG_STORE || secrets.STORE2_SHOPIFY_FLAG_STORE }}"
+          if [ "${{ matrix.store }}" == "store1" ]; then
+            echo "Store: tapan-sain.myshopify.com"
+          else
+            echo "Store: tapan-sain-bv.myshopify.com"
+          fi
