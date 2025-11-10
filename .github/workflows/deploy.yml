@@ -39,7 +39,7 @@ jobs:
         run: |
           cd build/${{ matrix.store }}
           THEME_NAME="GitHub-Deploy-$(date +%Y%m%d-%H%M%S)"
-          shopify theme push --unpublished --theme="Shoplc-github-demo" --path=. --json --force
+          shopify theme push --theme="Shoplc-github-demo" --path=. --json --allow-live
       
       - name: Deployment summary
         run: |
